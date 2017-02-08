@@ -17,18 +17,18 @@ import random
 import time
  
 
-songList = ["/home/pi/Desktop/music/DogBarkDetector_1.m4a",
-            "/home/pi/Desktop/music/DogBarkDetector_2.m4a",
-            "/home/pi/Desktop/music/DogBarkDetector_3.m4a",
-            "/home/pi/Desktop/music/DogBarkDetector_4.m4a"]
+songList = ["SongFile1", #e.g. "/home/pi/Desktop/SongFile.mp3"
+            "SongFile2",
+            "SongFile3",
+            "SongFile4"]
 
 creds = {
-    'CloudMQTT URL': 'https://m10.cloudmqtt.com',
-    'user': 'mknruacj',
-    'password': 'DZshcOOLAEz3',
-    'host': 'm10.cloudmqtt.com',
-    'port': '15221',
-    'topic': 'RPi'
+    'CloudMQTT URL': 'INSERT_CLOUDMQTT_URL', #e.g. 'https://m10.cloudmqtt.com'
+    'user': 'INSERT_CLOUDMQTT_USERNAME',
+    'password': 'INSERT__CLOUDMQTT_PASSWORD',
+    'host': 'INSERT_CLOUDMQTT_SERVER'
+    'port': 'INSERT_CLOUDMQTT_PORT',
+    'topic': 'INSERT_ACL_TOPIC'
     }
 
 ########################################################
@@ -138,16 +138,6 @@ mqttc.connect(creds['host'], creds['port'])
 
 # Start subscribe, with QoS level 0
 mqttc.subscribe(creds['topic'], 0)
-
-# Publish a message
-#mqttc.publish(str(PTPamp), "Volume")
-
-# Continue the network loop, exit when an error occurs
-#rc = True
-#while rc:
- #   rc = mqttc.loop()
-  #  time.sleep(1)
-#print("rc: " + str(rc))
 
 
 ########################################################
