@@ -7,6 +7,9 @@
 # buy me a coffee and/or beer if you run into me!
 #####################################################
 
+# Many thanks to the folks who create & document the libraries
+# and functions used in this project.
+
 #Libraries
 import spidev
 from threading import Thread
@@ -177,7 +180,6 @@ def main():
         while True:
             pass
     except KeyboardInterrupt:
-        GPIO.cleanup()
         myprocess.kill()
 
 
