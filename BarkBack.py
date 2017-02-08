@@ -37,7 +37,7 @@ creds = {
 ########################################################
 #   Reading SparkFun MEMS Microphone Breakout Board
 ########################################################
-#Step 1: Start SPI protocol.
+#Start SPI protocol.
 spi = spidev.SpiDev()
 spi.open(0,0) #This is the CE0 Pin (GPIO 08) on the RPi, for CE1, use (0,1)
 
@@ -118,15 +118,13 @@ def on_subscribe(mosq, obj, mid, granted_qos):
 def on_log(mosq, obj, level, string):
     print(string)
 
-#Call Client Server
+#Call Mosquitto Client Server
 mqttc = mosquitto.Mosquitto()
 #Assign event callbacks
 mqttc.on_message = on_message
 mqttc.on_connect = on_connect
 mqttc.on_publish = on_publish
 mqttc.on_subscribe = on_subscribe
-
-
 
 # Uncomment to enable debug messages
 #mqttc.on_log = on_log
@@ -147,35 +145,31 @@ mqttc.subscribe(creds['topic'], 0)
 #   Main Function
 ########################################################
 def main():
-
     while True:
         #1. Find ADC value for MEMS mic peak-to-peak amp
         PTPamp = PTPAmp()
         #2. Calculate ptp amp (Volts)
         PTPampV = round(((PTPamp*3.3) / 1024), 2)
         #3. Map ptp amp (ADC value) to Volume Unit between 0 and 10 
-        VolUnit = VolumeUnit(PTPamp, 0, 1023, 0, 10)
+        VolUnit = VolumeUnit(PTPamp, 0, 700, 0, 10)
                                                    
         #For debugging purposes
         print(PTPamp, VolUnit)
-        time.sleep(.1)
 
         #4. If Volume Unit is greater than 8, play one of the songs
-        if(VolUnit > 8):
+        if(VolUnit > 7):
             playBack = pickRandom(songList)
             OMXPlayer(playBack)
-            time.sleep(1)
+            time.sleep(0.1)
 
         #5. Upload data to CloudMQTT Server
         mqttc.publish(str(VolUnit), "Volume")
         rc = True
         while rc:
             rc = mqttc.loop()
-            time.sleep(1)
+            time.sleep(0.1)
         print("rc: " + str(rc))
-
-
-    print ("Ready: !")
+    
     try:
         while True:
             pass
