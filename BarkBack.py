@@ -11,12 +11,15 @@
 # and functions used in this project.
 
 #Libraries
+#SPI
 import spidev
+#OMXPlayer
 from threading import Thread
-import mosquitto, os, urlparse
-
 import subprocess
-import random
+#MQTT
+import paho.mqtt.client as paho
+#Other
+import random, time, os, urlparse
 import time
  
 
@@ -119,7 +122,7 @@ def on_log(mosq, obj, level, string):
     print(string)
 
 #Call Mosquitto Client Server
-mqttc = mosquitto.Mosquitto()
+mqttc = paho.Client()
 #Assign event callbacks
 mqttc.on_message = on_message
 mqttc.on_connect = on_connect
