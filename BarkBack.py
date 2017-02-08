@@ -120,34 +120,34 @@ def on_subscribe(mosq, obj, mid, granted_qos):
 
 def on_log(mosq, obj, level, string):
     print(string)
-
-#Call Mosquitto Client Server
-mqttc = paho.Client()
-#Assign event callbacks
-mqttc.on_message = on_message
-mqttc.on_connect = on_connect
-mqttc.on_publish = on_publish
-mqttc.on_subscribe = on_subscribe
-
-# Uncomment to enable debug messages
-#mqttc.on_log = on_log
-
-# Parse CLOUDMQTT_URL (or fallback to localhost)
-url_str = os.environ.get(creds['CloudMQTT URL'], 'mqtt://localhost:1883')
-url = urlparse.urlparse(url_str)
-
-# Connect
-mqttc.username_pw_set(creds['user'], creds['password'])
-mqttc.connect(creds['host'], creds['port'])
-
-# Start subscribe, with QoS level 0
-mqttc.subscribe(creds['topic'], 0)
-
+  
 
 ########################################################
 #   Main Function
 ########################################################
 def main():
+    #Call Paho Python Client Server
+    mqttc = paho.Client()
+    #Assign event callbacks
+    mqttc.on_message = on_message
+    mqttc.on_connect = on_connect
+    mqttc.on_publish = on_publish
+    mqttc.on_subscribe = on_subscribe
+
+    # Uncomment to enable debug messages
+    #mqttc.on_log = on_log
+
+    # Parse CLOUDMQTT_URL (or fallback to localhost)
+    url_str = os.environ.get(creds['CloudMQTT URL'], 'mqtt://localhost:1883')
+    url = urlparse.urlparse(url_str)
+
+    # Connect
+    mqttc.username_pw_set(creds['user'], creds['password'])
+    mqttc.connect(creds['host'], creds['port'])
+
+    # Start subscribe, with QoS level 0
+    mqttc.subscribe(creds['topic'], 0)
+    
     while True:
         #1. Find ADC value for MEMS mic peak-to-peak amp
         PTPamp = PTPAmp()
@@ -159,14 +159,14 @@ def main():
         #For debugging purposes
         print(PTPamp, VolUnit)
 
-        #4. If Volume Unit is greater than 8, play one of the songs
+        #4. If Volume Unit is greater than 7, play one of the songs
         if(VolUnit > 7):
             playBack = pickRandom(songList)
             OMXPlayer(playBack)
             time.sleep(0.1)
 
         #5. Upload data to CloudMQTT Server
-        mqttc.publish(str(VolUnit), "Volume")
+        mqttc.publish("Volume", str(VolUnit))
         rc = True
         while rc:
             rc = mqttc.loop()
